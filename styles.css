@@ -133,3 +133,57 @@ footer h3{font-size:clamp(52px,7vw,76px);font-weight:300;margin:0 0 54px}
     top:18px;
   }
 }
+
+
+/* v11 mobile overlay hard-fix */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+.overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100dvh !important;
+  overflow: hidden !important;
+}
+.overlay nav {
+  position: absolute !important;
+  top: 50% !important;
+  right: 28px !important;
+  left: auto !important;
+  transform: translateY(-50%) !important;
+  width: auto !important;
+  max-width: calc(100% - 56px) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  gap: 34px !important;
+  text-align: right !important;
+}
+.overlay nav a {
+  display: block !important;
+  width: auto !important;
+  max-width: 100% !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+}
+.close {
+  right: 20px !important;
+  top: 20px !important;
+}
+
+@media (max-width: 760px) {
+  .overlay nav {
+    right: 24px !important;
+    max-width: calc(100% - 48px) !important;
+    font-size: 28px !important;
+  }
+  .overlay nav a {
+    max-width: 100% !important;
+  }
+}
