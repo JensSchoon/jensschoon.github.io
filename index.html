@@ -1,369 +1,48 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>JS Emulation</title>
-<!-- JS Emulation v5: CTA refinement -->
-<meta name="theme-color" content="#0a0a0b">
-<style>
-:root{
-  --bg:#09090a;
-  --panel:#151516;
-  --panel2:#1a1a1b;
-  --text:#f3f3f3;
-  --muted:#9b9b9e;
-  --line:#3a3a3d;
-  --green:#17f24a;
-  --green2:#65ff84;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:104px}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;overflow-x:hidden}
-a{color:inherit;text-decoration:none}
-button{font:inherit}
-.container{width:min(1120px,calc(100% - 42px));margin:auto}
-
-/* HEADER */
-.header{
-  position:sticky;top:0;z-index:50;background:rgba(8,8,9,.93);
-  border-bottom:1px dashed #38383a;backdrop-filter:blur(12px)
-}
-.header-inner{height:84px;display:flex;align-items:center;justify-content:space-between}
-.brand{display:flex;align-items:center;gap:13px;font-size:23px;font-weight:700}
-.logo-box{
-  width:52px;height:52px;border:4px solid var(--green);border-left-width:7px;border-right-width:7px;
-  display:grid;place-items:center;color:var(--green);font:bold 22px/1 monospace;box-shadow:0 0 18px rgba(23,242,74,.15)
-}
-.burger{width:52px;height:52px;border:0;background:transparent;display:grid;place-items:center;cursor:pointer}
-.burger span,.burger:before,.burger:after{content:"";display:block;width:40px;height:2px;background:#f2f2f2;margin:5px 0}
-.burger{padding:6px}
-
-/* OVERLAY MENU */
-.overlay{
-  position:fixed;inset:0;background:#09090a;z-index:100;display:flex;
-  opacity:0;visibility:hidden;transition:.3s ease
-}
-.overlay.open{opacity:1;visibility:visible}
-.close{
-  position:absolute;right:22px;top:22px;width:56px;height:56px;background:transparent;border:0;cursor:pointer
-}
-.close:before,.close:after{content:"";position:absolute;left:27px;top:8px;width:2px;height:42px;background:white}
-.close:before{transform:rotate(45deg)} .close:after{transform:rotate(-45deg)}
-.overlay nav{margin:auto 32px auto auto;display:flex;flex-direction:column;gap:34px;text-align:right;font-size:29px}
-.overlay nav a{color:#f6f6f6}.overlay nav a:hover{color:var(--green)}
-
-/* HERO */
-.hero{min-height:880px;border-bottom:1px solid #121214}
-.hero-top{padding:92px 0 60px}
-.hero h1{font-weight:300;font-size:clamp(62px,8vw,118px);line-height:.92;margin:0 0 24px;letter-spacing:-.04em}
-.hero .tagline{color:var(--green);font-size:clamp(25px,3vw,44px);line-height:1.05;font-weight:400;text-transform:uppercase;max-width:760px}
-.hero-art{height:560px;position:relative;overflow:hidden;background:linear-gradient(180deg,#242a31,#111418)}
-.hero-art svg{width:100%;height:100%;display:block}
-
-/* SECTION TITLES */
-.section{padding:105px 0;scroll-margin-top:104px}
-.eyebrow{font-size:14px;text-transform:uppercase;letter-spacing:.17em;color:var(--green);font-weight:700}
-h2{font-weight:300;font-size:clamp(52px,7vw,88px);letter-spacing:-.04em;line-height:.95;margin:14px 0 42px}
-.muted{color:var(--muted)}
-
-/* REVEAL / 3D CARDS */
-.software{position:relative}
-.cards{display:flex;flex-direction:column;gap:44px}
-.reveal-card{
-  width:min(88%,780px);min-height:320px;background:var(--panel);border:1px dashed #444;
-  padding:44px 48px;position:relative;opacity:0;
-  transform:perspective(1100px) rotateY(16deg) translateX(110px) translateY(70px) scale(.96);
-  transition:opacity .8s ease, transform 1s cubic-bezier(.2,.7,.2,1)
-}
-.reveal-card:nth-child(2){align-self:flex-end;transform:perspective(1100px) rotateY(-16deg) translateX(-110px) translateY(70px) scale(.96)}
-.reveal-card:nth-child(3){width:min(72%,650px)}
-.reveal-card.show{opacity:1;transform:perspective(1100px) rotateY(0) translateX(0) translateY(0) scale(1)}
-.card-number{color:var(--green);font-size:28px;margin-bottom:28px}
-.reveal-card h3{font-size:42px;font-weight:300;margin:0 0 20px}
-.reveal-card p{font-size:27px;line-height:1.35;color:#a8a8ab;margin:0}
-
-/* TECH IMAGE */
-.tech-visual{margin:110px 0 40px;height:520px;border:1px solid #242428;overflow:hidden;background:#0f1215}
-.tech-visual svg{width:100%;height:100%}
-
-/* ARCHITECTURE */
-.arch{display:grid;grid-template-columns:1fr;gap:28px;max-width:860px}
-.arch h3{font-size:clamp(48px,6vw,72px);font-weight:300;margin:0}
-.arch p{font-size:25px;line-height:1.48;color:#a3a3a6;margin:0}
-.outline-btn{display:inline-block;margin-top:22px;border:2px solid var(--green);color:var(--green);padding:18px 24px;font-size:25px}
-
-/* LOGBOOK */
-.logbook{display:grid;gap:34px}
-.log-card{border:1px solid #3c3c3f;padding:48px 44px;min-height:260px;background:#0b0b0c}
-.log-time{font-size:19px;margin-bottom:30px}.log-card h4{font-size:38px;font-weight:300;margin:0 0 18px}
-.log-card p{font-size:21px;line-height:1.4;margin:0;color:#efefef}
-
-/* CTA */
-.cta{background:#181819;padding:80px 0;border-top:1px solid #49494b;border-bottom:1px solid #49494b}
-.cta h3{font-size:clamp(50px,7vw,78px);font-weight:300;margin:0 0 42px}
-.cta .solid{display:inline-block;padding:20px 26px;background:var(--green);color:#111;font-size:25px}
-
-/* FOOTER */
-footer{padding:90px 0 110px;text-align:center}
-footer h3{font-size:clamp(52px,7vw,76px);font-weight:300;margin:0 0 54px}
-.footer-brand{display:inline-flex;align-items:center;gap:12px;font-size:26px;font-weight:700;margin-bottom:52px}
-.socials{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;margin:50px 0}
-.social{
-  width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:white;font-size:20px
-}
-.fb{background:#1877f2}.ig{background:linear-gradient(135deg,#ff7a00,#ff0069,#7a3cff)}.yt{background:#ff0000}
-.x{background:#000;border:1px solid #333}.in{background:#0a66c2}.tt{background:#000;border:1px solid #333}
-.contact{font-size:24px}.copyright{color:#a0a0a2;font-size:18px;margin-top:34px}
-
-/* PORTFOLIO */
-.portfolio-grid{display:grid;gap:36px}
-.portfolio-item{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}
-.portfolio-img{min-height:330px;background:linear-gradient(135deg,#1b1b1d,#0c0c0e);border:1px solid #26262a;display:grid;place-items:center;overflow:hidden}
-.portfolio-img svg{width:100%;height:100%}
-.portfolio-item h3{font-size:34px;font-weight:300;margin:0 0 15px}
-.portfolio-item p{font-size:20px;color:#d7d7d9;line-height:1.45}
-
-/* Mobile */
-@media(max-width:760px){
-  .container{width:min(100% - 36px,1120px)}
-  .header-inner{height:78px}
-  .header{min-height:78px}
-  .brand{font-size:20px;gap:10px}
-  .logo-box{width:46px;height:46px;font-size:19px}
-  .burger{width:48px;height:48px}
-  .burger span,.burger:before,.burger:after{width:36px}
-
-  .hero{min-height:auto}
-  .hero-top{padding:68px 0 46px}
-  .hero h1{font-size:clamp(54px,15vw,78px);line-height:.93}
-  .hero .tagline{font-size:clamp(22px,6vw,30px)}
-  .hero-art{height:610px}
-
-  .section{padding:118px 0 76px;scroll-margin-top:96px}
-  .software{padding-top:132px}
-  h2{font-size:clamp(46px,12vw,66px);margin-bottom:34px}
-
-  .cards{gap:28px}
-  .reveal-card,
-  .reveal-card:nth-child(2),
-  .reveal-card:nth-child(3){
-    width:100%;
-    min-height:0;
-    padding:30px 28px 34px;
-  }
-  .card-number{font-size:23px;margin-bottom:20px}
-  .reveal-card h3{font-size:32px;line-height:1.08;margin-bottom:16px}
-  .reveal-card p{font-size:20px;line-height:1.42}
-
-  .tech-visual{height:330px;margin-top:68px}
-  .arch{gap:22px}
-  .arch h3{font-size:45px}
-  .arch p{font-size:21px;line-height:1.5}
-  .outline-btn{font-size:21px;padding:15px 19px}
-
-  .log-card{padding:34px 28px;min-height:0}
-  .log-card h4{font-size:31px}
-  .log-card p{font-size:19px}
-
-  .portfolio-item{grid-template-columns:1fr}
-  .portfolio-img{min-height:250px}
-  .portfolio-item h3{font-size:31px}
-  .portfolio-item p{font-size:19px}
-
-  .cta{padding:62px 0}
-  .cta h3{margin-bottom:28px}
-  .cta .solid{font-size:21px;padding:17px 20px}
-
-  footer{padding:72px 0 86px}
-  footer h3{margin-bottom:38px}
-  .footer-brand{font-size:22px;margin-bottom:38px}
-  .contact{font-size:20px}
-  .socials{gap:16px;margin:38px 0}
-  .social{width:44px;height:44px}
-}
-</style>
-</head>
-<body>
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JS Emulation</title><meta name="theme-color" content="#0a0a0b"><link rel="stylesheet" href="styles.css"></head><body>
 
 <header class="header">
   <div class="container header-inner">
-    <a class="brand" href="#home"><span class="logo-box">⌁</span><span>JS Emulation</span></a>
+    <a class="brand" href="index.html"><span class="logo-box">⌁</span><span>JS Emulation</span></a>
     <button class="burger" id="burger" aria-label="Menü öffnen"><span></span></button>
   </div>
 </header>
-
 <div class="overlay" id="overlay">
   <button class="close" id="close" aria-label="Menü schließen"></button>
   <nav>
-    <a href="#home">Home</a>
-    <a href="#portfolio">Portfolioseite</a>
-    <a href="#blog">Blog</a>
+    <a href="index.html" class="active">Home</a>
+    <a href="portfolio.html" class="">Portfolio</a>
+    <a href="blog.html" class="">Blog</a>
   </nav>
 </div>
 
-<main id="home">
-  <section class="hero">
-    <div class="container hero-top">
-      <h1>JS EMULATION<br>CORE</h1>
-      <div class="tagline">INNOVATIVE SOFTWARE. INSPIRING INSIGHTS.</div>
-    </div>
-
-    <div class="hero-art">
-      <svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-        <defs>
-          <linearGradient id="b" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#2f3740"/>
-            <stop offset="1" stop-color="#0f1216"/>
-          </linearGradient>
-          <filter id="glow"><feGaussianBlur stdDeviation="6" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-        </defs>
-        <g fill="url(#b)" stroke="#3c444c" stroke-width="3">
-          <rect x="-70" y="150" width="300" height="220" rx="10"/>
-          <rect x="180" y="70" width="320" height="260" rx="10"/>
-          <rect x="500" y="150" width="340" height="235" rx="10"/>
-          <rect x="820" y="95" width="330" height="260" rx="10"/>
-          <rect x="90" y="400" width="330" height="270" rx="10"/>
-          <rect x="440" y="390" width="290" height="230" rx="10"/>
-          <rect x="760" y="390" width="350" height="300" rx="10"/>
-        </g>
-        <g fill="none" stroke="#45f6b3" stroke-width="7" stroke-linecap="round" filter="url(#glow)">
-          <path d="M0 290 H170 V250 H315 V330 H520"/>
-          <path d="M300 510 H480 V455 H655 V515 H1030"/>
-          <path d="M760 210 V310 H910 V420"/>
-          <path d="M120 610 H360 V565 H540"/>
-        </g>
-        <g fill="#45f6b3" filter="url(#glow)">
-          <circle cx="170" cy="290" r="11"/><circle cx="315" cy="250" r="11"/><circle cx="480" cy="510" r="11"/>
-          <circle cx="655" cy="455" r="11"/><circle cx="910" cy="420" r="11"/><circle cx="360" cy="610" r="11"/>
-        </g>
-      </svg>
-    </div>
-  </section>
-
-  <section class="section software">
-    <div class="container">
-      <h2>SOFTWARE-<br>ÜBERSICHT</h2>
-      <div class="cards">
-        <article class="reveal-card">
-          <div class="card-number">01</div>
-          <h3>1908 EMULATOR</h3>
-          <p>Game-Boy-Emulation mit Save-States, Battery SRAM, Controller-Unterstützung und klassischem Retro-Look.</p>
-        </article>
-
-        <article class="reveal-card">
-          <div class="card-number">02</div>
-          <h3>SNES KING</h3>
-          <p>SNES-Emulation mit eigener CPU/PPU-Logik, Audio-Timing und stetig wachsender Spielekompatibilität.</p>
-        </article>
-
-        <article class="reveal-card">
-          <div class="card-number">03</div>
-          <h3>THE BIG C / STAR N64</h3>
-          <p>Experimentelle Emulator-Projekte für C64 und Nintendo 64 – von 6502/VIC bis RSP, VI und Framebuffer.</p>
-        </article>
-      </div>
-
-      <div class="tech-visual">
-        <svg viewBox="0 0 1000 600" aria-hidden="true">
-          <defs>
-            <radialGradient id="chip" cx="50%" cy="50%" r="50%">
-              <stop offset="0" stop-color="#5dff7c"/>
-              <stop offset=".5" stop-color="#1bdc4e"/>
-              <stop offset="1" stop-color="#0f7430"/>
-            </radialGradient>
-            <filter id="g2"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          </defs>
-          <rect width="1000" height="600" fill="#0d151b"/>
-          <g stroke="#1f3d35" stroke-width="2" opacity=".8">
-            <path d="M0 120 H1000M0 220 H1000M0 320 H1000M0 420 H1000"/>
-            <path d="M120 0 V600M260 0 V600M400 0 V600M600 0 V600M760 0 V600M900 0 V600"/>
-          </g>
-          <g stroke="#3cff6b" stroke-width="7" fill="none" filter="url(#g2)">
-            <path d="M500 285 H90M500 315 H150M500 345 H220M500 255 H160"/>
-            <path d="M500 285 H910M500 315 H850M500 345 H780M500 255 H840"/>
-            <path d="M465 300 V70M495 300 V120M525 300 V90M555 300 V150"/>
-            <path d="M465 300 V530M495 300 V480M525 300 V510M555 300 V450"/>
-          </g>
-          <rect x="405" y="205" width="190" height="190" rx="20" fill="url(#chip)" filter="url(#g2)"/>
-          <rect x="432" y="232" width="136" height="136" rx="14" fill="#42f26f" opacity=".9"/>
-        </svg>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container arch">
-      <h3>THE ARCHITECTURE</h3>
-      <p>Emulation ist die digitale Nachbildung klassischer Hardware durch moderne Software. JS Emulation analysiert die zugrunde liegende Architektur und setzt sie Schritt für Schritt in eigenen Emulator-Kernen um – von CPU und Speicher bis Grafik, Audio und Eingabe.</p>
-      <div><a class="outline-btn" href="#portfolio">Mehr erfahren</a></div>
-    </div>
-  </section>
-
-  <section class="section" id="blog">
-    <div class="container">
-      <h2>LOGBOOK</h2>
-      <div class="logbook">
-        <article class="log-card">
-          <div class="log-time">Aktuell</div>
-          <h4>Emulatoren in Entwicklung</h4>
-          <p>1908 Emulator, SNES KING, THE BIG C und STAR N64 werden kontinuierlich getestet und weiterentwickelt.</p>
-        </article>
-        <article class="log-card">
-          <div class="log-time">Technik</div>
-          <h4>Emulation verstehen</h4>
-          <p>CPU, Grafik, Audio, Speicher und Timing greifen zusammen. Kleine Abweichungen können bereits sichtbare Fehler erzeugen.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="portfolio">
-    <div class="container">
-      <h2>Portfolio</h2>
-      <div class="portfolio-grid">
-        <article class="portfolio-item">
-          <div class="portfolio-img">
-            <svg viewBox="0 0 700 420">
-              <defs><linearGradient id="or" x1="0" x2="1"><stop offset="0" stop-color="#ffad39"/><stop offset="1" stop-color="#ff6b00"/></linearGradient></defs>
-              <rect width="700" height="420" fill="#071427"/>
-              <rect x="145" y="110" width="410" height="200" rx="34" fill="url(#or)" stroke="#ffb55c" stroke-width="9"/>
-              <rect x="175" y="128" width="350" height="165" rx="24" fill="#ff9430" opacity=".45"/>
-              <circle cx="190" cy="145" r="10" fill="#ffb748"/>
-            </svg>
-          </div>
-          <div>
-            <h3>1908 Emulator</h3>
-            <p>Ein eigenständiger Game-Boy-Emulator für Android mit Fokus auf gute Kompatibilität, Save-States und Controller-Unterstützung.</p>
-          </div>
-        </article>
-
-        <article class="portfolio-item">
-          <div class="portfolio-img">
-            <svg viewBox="0 0 700 420">
-              <rect width="700" height="420" fill="#0b0b0c"/>
-              <g transform="translate(185 75)">
-                <path d="M160 0 L320 80 L160 160 L0 80 Z" fill="#2530ff"/>
-                <path d="M0 80 L160 160 V330 L0 250 Z" fill="#ff5a15"/>
-                <path d="M320 80 L160 160 V330 L320 250 Z" fill="#17f24a"/>
-              </g>
-            </svg>
-          </div>
-          <div>
-            <h3>Weitere Systeme</h3>
-            <p>SNES, C64 und N64 bilden die technische Erweiterung von JS Emulation – jeweils mit eigenem Kern, eigener Oberfläche und eigenem Entwicklungsziel.</p>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="cta">
-    <div class="container">
-      <h3>BUILT FOR ACCURACY</h3>
-      <a class="solid" href="#portfolio">Projekte entdecken</a>
-    </div>
-  </section>
+<main>
+<section class="hero"><div class="container hero-top"><h1>JS EMULATION<br>CORE</h1><div class="tagline">INNOVATIVE SOFTWARE. INSPIRING INSIGHTS.</div></div>
+<div class="hero-art">
+<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<defs>
+<linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2f3740"/><stop offset="1" stop-color="#0f1216"/></linearGradient>
+<filter id="glow"><feGaussianBlur stdDeviation="6" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<g fill="url(#b)" stroke="#3c444c" stroke-width="3">
+<rect x="-70" y="150" width="300" height="220" rx="10"/><rect x="180" y="70" width="320" height="260" rx="10"/>
+<rect x="500" y="150" width="340" height="235" rx="10"/><rect x="820" y="95" width="330" height="260" rx="10"/>
+<rect x="90" y="400" width="330" height="270" rx="10"/><rect x="440" y="390" width="290" height="230" rx="10"/>
+<rect x="760" y="390" width="350" height="300" rx="10"/></g>
+<g fill="none" stroke="#45f6b3" stroke-width="7" stroke-linecap="round" filter="url(#glow)">
+<path d="M0 290 H170 V250 H315 V330 H520"/><path d="M300 510 H480 V455 H655 V515 H1030"/>
+<path d="M760 210 V310 H910 V420"/><path d="M120 610 H360 V565 H540"/></g>
+<g fill="#45f6b3" filter="url(#glow)"><circle cx="170" cy="290" r="11"/><circle cx="315" cy="250" r="11"/><circle cx="480" cy="510" r="11"/><circle cx="655" cy="455" r="11"/><circle cx="910" cy="420" r="11"/><circle cx="360" cy="610" r="11"/></g>
+</svg>
+</div>
+</section>
+<section class="section software"><div class="container"><h2>SOFTWARE-<br>ÜBERSICHT</h2><div class="cards">
+<article class="reveal-card"><div class="card-number">01</div><h3>1908 EMULATOR</h3><p>Game-Boy-Emulation mit Save-States, Battery SRAM, Controller-Unterstützung und klassischem Retro-Look.</p></article>
+<article class="reveal-card"><div class="card-number">02</div><h3>SNES KING</h3><p>SNES-Emulation mit eigener CPU/PPU-Logik, Audio-Timing und stetig wachsender Spielekompatibilität.</p></article>
+<article class="reveal-card"><div class="card-number">03</div><h3>THE BIG C / STAR N64</h3><p>Experimentelle Emulator-Projekte für C64 und Nintendo 64 – von 6502/VIC bis RSP, VI und Framebuffer.</p></article>
+</div></div></section>
+<section class="section"><div class="container arch"><h3>THE ARCHITECTURE</h3><p>Emulation ist die digitale Nachbildung klassischer Hardware durch moderne Software. JS Emulation analysiert die zugrunde liegende Architektur und setzt sie Schritt für Schritt in eigenen Emulator-Kernen um – von CPU und Speicher bis Grafik, Audio und Eingabe.</p><div><a class="outline-btn" href="portfolio.html">Portfolio öffnen</a></div></div></section>
+<section class="cta"><div class="container"><h3>BUILT FOR ACCURACY</h3><a class="solid" href="portfolio.html">Projekte entdecken</a></div></section>
 </main>
 
 <footer id="contact">
@@ -371,71 +50,29 @@ footer h3{font-size:clamp(52px,7vw,76px);font-weight:300;margin:0 0 54px}
     <h3>JS EMULATION</h3>
     <div class="footer-brand"><span class="logo-box">⌁</span><span>JS Emulation</span></div>
     <div class="contact">kontakt@js-emulation.com</div>
+    
+<div class="socials">
+  <a class="social fb" href="#" aria-label="Facebook">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M13.7 21v-8h2.7l.4-3h-3.1V8.1c0-.9.3-1.5 1.6-1.5h1.7V4a22 22 0 0 0-2.5-.1c-2.5 0-4.2 1.5-4.2 4.3V10H7.5v3h2.8v8h3.4z"/></svg>
+  </a>
+  <a class="social ig" href="#" aria-label="Instagram">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="4.6"></rect><circle cx="12" cy="12" r="3.6"></circle><circle cx="17.2" cy="6.8" r="1"></circle></g></svg>
+  </a>
+  <a class="social yt" href="#" aria-label="YouTube">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M9.7 8.4v7.2l6.2-3.6-6.2-3.6z"/></svg>
+  </a>
+  <a class="social x" href="#" aria-label="X">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M5.1 4h3.8l3.9 5.3L17.6 4H19l-5.6 6.4L19.4 20h-3.8l-4.4-6-5.3 6H4.5l6-7L5.1 4zm2.2 1.1 8.8 13.8h1.9L9.2 5.1H7.3z"/></svg>
+  </a>
+  <a class="social in" href="#" aria-label="LinkedIn">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M6.4 8.1H3.5V20h2.9V8.1zM5 3.5a1.7 1.7 0 1 0 0 3.4 1.7 1.7 0 0 0 0-3.4zM20.5 13.2c0-3.6-1.9-5.3-4.5-5.3-2.1 0-3 1.1-3.5 1.9V8.1H9.6V20h2.9v-5.9c0-1.6.3-3.1 2.3-3.1 2 0 2 1.8 2 3.2V20h2.9v-6.8h-.2z"/></svg>
+  </a>
+  <a class="social tt" href="#" aria-label="TikTok">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#25F4EE" d="M13.6 4.2c.4 1.9 1.5 3.2 3.4 3.7v2.3a8.4 8.4 0 0 1-3.4-1v5.3a5 5 0 1 1-4.3-5v2.4a2.7 2.7 0 1 0 1.9 2.6V4.2h2.4z"/><path fill="#FE2C55" d="M14.5 3.4c.4 1.9 1.5 3.2 3.4 3.7v2.3a8.4 8.4 0 0 1-3.4-1v5.3a5 5 0 1 1-4.3-5v2.4a2.7 2.7 0 1 0 1.9 2.6V3.4h2.4z" opacity=".85"/><path fill="#fff" d="M14.1 3.8c.4 1.8 1.5 3.1 3.3 3.6v1.5a7.6 7.6 0 0 1-3.3-1v5.9a4.5 4.5 0 1 1-4-4.5v1.7a2.9 2.9 0 1 0 2.2 2.8v-10h1.8z"/></svg>
+  </a>
+</div>
 
-    <div class="socials">
-      <a class="social fb" href="#" aria-label="Facebook">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="#fff" d="M13.7 21v-8h2.7l.4-3h-3.1V8.1c0-.9.3-1.5 1.6-1.5h1.7V4a22 22 0 0 0-2.5-.1c-2.5 0-4.2 1.5-4.2 4.3V10H7.5v3h2.8v8h3.4z"/>
-        </svg>
-      </a>
-
-      <a class="social ig" href="#" aria-label="Instagram">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <g fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="4" y="4" width="16" height="16" rx="4.6"></rect>
-            <circle cx="12" cy="12" r="3.6"></circle>
-            <circle cx="17.2" cy="6.8" r="1"></circle>
-          </g>
-        </svg>
-      </a>
-
-      <a class="social yt" href="#" aria-label="YouTube">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="#fff" d="M9.7 8.4v7.2l6.2-3.6-6.2-3.6z"/>
-        </svg>
-      </a>
-
-      <a class="social x" href="#" aria-label="X">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="#fff" d="M5.1 4h3.8l3.9 5.3L17.6 4H19l-5.6 6.4L19.4 20h-3.8l-4.4-6-5.3 6H4.5l6-7L5.1 4zm2.2 1.1 8.8 13.8h1.9L9.2 5.1H7.3z"/>
-        </svg>
-      </a>
-
-      <a class="social in" href="#" aria-label="LinkedIn">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="#fff" d="M6.4 8.1H3.5V20h2.9V8.1zM5 3.5a1.7 1.7 0 1 0 0 3.4 1.7 1.7 0 0 0 0-3.4zM20.5 13.2c0-3.6-1.9-5.3-4.5-5.3-2.1 0-3 1.1-3.5 1.9V8.1H9.6V20h2.9v-5.9c0-1.6.3-3.1 2.3-3.1 2 0 2 1.8 2 3.2V20h2.9v-6.8h-.2z"/>
-        </svg>
-      </a>
-
-      <a class="social tt" href="#" aria-label="TikTok">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="#25F4EE" d="M13.6 4.2c.4 1.9 1.5 3.2 3.4 3.7v2.3a8.4 8.4 0 0 1-3.4-1v5.3a5 5 0 1 1-4.3-5v2.4a2.7 2.7 0 1 0 1.9 2.6V4.2h2.4z"/>
-          <path fill="#FE2C55" d="M14.5 3.4c.4 1.9 1.5 3.2 3.4 3.7v2.3a8.4 8.4 0 0 1-3.4-1v5.3a5 5 0 1 1-4.3-5v2.4a2.7 2.7 0 1 0 1.9 2.6V3.4h2.4z" opacity=".85"/>
-          <path fill="#fff" d="M14.1 3.8c.4 1.8 1.5 3.1 3.3 3.6v1.5a7.6 7.6 0 0 1-3.3-1v5.9a4.5 4.5 0 1 1-4-4.5v1.7a2.9 2.9 0 1 0 2.2 2.8v-10h1.8z"/>
-        </svg>
-      </a>
-    </div>
     <div class="copyright">© 2026 JS EMULATION. Alle Rechte vorbehalten.</div>
   </div>
 </footer>
-
-<script>
-const overlay=document.getElementById('overlay');
-document.getElementById('burger').addEventListener('click',()=>overlay.classList.add('open'));
-document.getElementById('close').addEventListener('click',()=>overlay.classList.remove('open'));
-overlay.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>overlay.classList.remove('open')));
-
-const cards=[...document.querySelectorAll('.reveal-card')];
-const observer=new IntersectionObserver((entries)=>{
-  entries.forEach(entry=>{
-    if(entry.isIntersecting){
-      const i=cards.indexOf(entry.target);
-      setTimeout(()=>entry.target.classList.add('show'), i*140);
-      observer.unobserve(entry.target);
-    }
-  });
-},{threshold:.18});
-cards.forEach(c=>observer.observe(c));
-</script>
-</body>
-</html>
+<script src="script.js"></script></body></html>
