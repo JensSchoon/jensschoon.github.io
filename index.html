@@ -377,6 +377,23 @@ html, body {
   .reveal-card-nes-city .emu-meta-badges{
     width:100%;
     justify-content:flex-start;
+    flex-wrap:nowrap;
+    gap:4px;
+  }
+  .reveal-card-nes-city .version-badge,
+  .reveal-card-nes-city .status-badge,
+  .reveal-card-nes-city .progress-badge{
+    flex:0 0 auto;
+    min-height:32px;
+    padding:6px 5px;
+    font-size:clamp(9px,2.7vw,12px);
+    letter-spacing:0;
+  }
+  .reveal-card-nes-city .status-badge::before{
+    width:5px;
+    height:5px;
+    margin-right:4px;
+    flex:0 0 auto;
   }
 }
 </style><style>.legal-footer-link{display:inline-block;color:var(--green);margin:16px 0 25px;font-size:14px}.legal-footer-link:hover{text-decoration:underline}</style></head><body>
