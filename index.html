@@ -365,6 +365,20 @@ html, body {
 .brand-main{font-size:24px;font-weight:600;color:#f3f3f3;line-height:1.08;margin:1px 0 2px}
 .brand-tagline{font-size:10px;font-weight:600;letter-spacing:.025em;margin-top:1px}
 @media(max-width:760px){.brand{gap:10px}.brand-copy{line-height:1.01}.brand-kicker{font-size:9px;transform:translateX(4px)}.brand-main{font-size:19px}.brand-tagline{font-size:8px}}
+
+/* NES CITY: Statusanzeigen auf Mobilgeraeten unter dem Titel links ausrichten. */
+@media (max-width:760px){
+  .reveal-card-nes-city .emu-title-row{
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:flex-start;
+    gap:16px;
+  }
+  .reveal-card-nes-city .emu-meta-badges{
+    width:100%;
+    justify-content:flex-start;
+  }
+}
 </style><style>.legal-footer-link{display:inline-block;color:var(--green);margin:16px 0 25px;font-size:14px}.legal-footer-link:hover{text-decoration:underline}</style></head><body>
 <header class="header">
 <div class="container header-inner">
