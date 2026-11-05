@@ -37,7 +37,14 @@
 .impressum-banner{padding:14px 0 48px}
 .impressum-banner img{display:block;width:100%;height:auto;object-fit:contain;border:1px solid rgba(242,107,185,.42);border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.35),0 0 25px rgba(235,89,163,.08)}
 @media(max-width:720px){.impressum-intro{padding:53px 0 43px}.impressum-intro h1{font-size:clamp(42px,11vw,69px)}.impressum-main{padding:28px 0 32px}.impressum-card{border-radius:12px}.impressum-banner{padding:7px 0 32px}.impressum-banner img{border-radius:10px}}
-</style><meta property="og:title" content="Legal Notice | JSE"><meta property="og:description" content="Hinweise zu den Emulatoren und rechtlichen Rahmenbedingungen von JSE."><meta property="og:type" content="website"></head><body><header class="site-header"><div class="container head-inner"><a class="logo" href="index.html" aria-label="JSE – zur Startseite">JSE</a><button type="button" class="menu-toggle" aria-label="Menü öffnen oder schließen" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span></button><nav class="site-nav" id="site-nav" aria-label="Hauptnavigation"><a href="index.html">Home</a><a href="portfolio.html">Emulators</a><a href="games.html">Games</a><a href="blog.html">Development</a><a href="about.html">About JSE</a><a href="legal-notice.html">Legal Notice</a><a aria-current="page" href="impressum.html">Impressum</a></nav></div></header><main class="impressum-page">
+
+/* JSE Netplay: exclusively the expandable mobile menu. */
+.site-nav .mobile-netplay-link{display:none}
+@media(max-width:720px){
+  .site-nav .mobile-netplay-link{display:flex}
+  .site-nav.open{max-height:calc(100dvh - 69px);overflow-y:auto;overscroll-behavior:contain}
+}
+</style><meta property="og:title" content="Legal Notice | JSE"><meta property="og:description" content="Hinweise zu den Emulatoren und rechtlichen Rahmenbedingungen von JSE."><meta property="og:type" content="website"></head><body><header class="site-header"><div class="container head-inner"><a class="logo" href="index.html" aria-label="JSE – zur Startseite">JSE</a><button type="button" class="menu-toggle" aria-label="Menü öffnen oder schließen" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span></button><nav class="site-nav" id="site-nav" aria-label="Hauptnavigation"><a href="index.html">Home</a><a href="portfolio.html">Emulators</a><a href="games.html">Games</a><a href="blog.html">Development</a><a href="jse-netplay.html" class="mobile-netplay-link">JSE Netplay</a><a href="about.html">About JSE</a><a href="legal-notice.html">Legal Notice</a><a aria-current="page" href="impressum.html">Impressum</a></nav></div></header><main class="impressum-page">
   <header class="page-intro impressum-intro"><div class="container">
     <div class="eyebrow">JSE / KONTAKT</div>
     <h1>Impressum</h1>
