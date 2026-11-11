@@ -93,11 +93,13 @@
 }
 
 /* Keep Miko GameCollection app icon fully visible in the wider preview tile. */
-.world.games .preview-picture img[alt="Miko’s Game Collection"] {object-fit:contain}
+/* Alle Spiele-Icons gleich gross: keine Letterbox-Raender. */
+.world.games .preview-picture {height:auto;aspect-ratio:1/1;position:relative}
+.world.games .preview-picture img {position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 
 /* JSE Games: 5 previews, 4 visible and scrollable on small screens. */
 .world.games .world-previews {grid-template-columns:repeat(5,minmax(0,1fr))}
-.world.games .preview-picture img[alt="LINE FIGHT DX"] {object-fit:contain}
+
 @media(max-width:720px){
  .world.games .world-previews {display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;scrollbar-width:thin;scrollbar-color:#ff71cf transparent;padding-bottom:8px;-webkit-overflow-scrolling:touch}
  .world.games .world-previews .preview {flex:0 0 calc((100% - 30px)/4);scroll-snap-align:start}
